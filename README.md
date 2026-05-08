@@ -45,41 +45,7 @@ Libraries & Frameworks:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-PROJECT STRUCTURE
 
-Traffic-Flow-Optimization-System/
-│
-├── .venv/
-│
-├── atfos_master.py
-│   Main project execution and traffic management logic
-│
-├── atfos_vision.py
-│   Handles vehicle detection and video processing
-│
-├── atfos_web.py
-│   Streamlit web application interface
-│
-├── train_model.py
-│   Machine Learning model training script
-│
-├── delhi_traffic_features.csv
-│   Dataset used for training and prediction
-│
-├── feature_importance.png
-│   Visualization of important traffic features
-│
-├── videoplayback.mp4
-│   Demo traffic video for testing
-│
-├── yolov8n.pt
-│   YOLOv8 pretrained model weights
-│
-├── README.md
-│   Project documentation
-│
-└── .gitignore
-    Git ignored files configuration
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
