@@ -7,7 +7,6 @@ import joblib
 import pandas as pd
 import numpy as np
 import streamlit as st
-import google.generativeai as genai
 from ultralytics import YOLO
 from dotenv import load_dotenv
 
@@ -47,21 +46,11 @@ st.markdown("### AI-Driven Traffic Optimization System")
 st.markdown("*Bridging Historical Machine Learning with Live Computer Vision to automate civic infrastructure.*")
 st.divider()
 
-# --- SIDEBAR: API CONFIGURATION ---
-st.sidebar.header("⚙️ API Configuration")
-
-# Safely fetch the key from .env file
-env_api_key = os.getenv("GEMINI_API_KEY")
-
-if env_api_key:
-    api_key = env_api_key
-    st.sidebar.success("✅ API Key securely loaded from .env")
-else:
-    api_key = st.sidebar.text_input("Gemini API Key", type="password", help="Enter your Google Gemini API key to activate the Smart Chatbot.")
-    
+# --- SIDEBAR: SYSTEM INFO ---
+st.sidebar.header("⚙️ System Configuration")
 st.sidebar.markdown("""
-*If you do not have an API key, get one for free at [Google AI Studio](https://aistudio.google.com/).* \n
-*The rest of the CV/ML pipeline works entirely locally!*
+*This app is running without the chatbot module.*
+*Live vision and traffic decision pipelines remain active.
 """)
 
 # --- LOAD MODELS EFFICIENTLY ---
@@ -102,65 +91,19 @@ with col2:
     st.divider()
     
     st.markdown("#### 🤖 AI Command Center")
-    # Chatbot Area
-    chat_container = st.container(height=380)
-    user_prompt = st.chat_input("Ask the system why it changed the lights...")
+    st.markdown("""
+    This version of ATFOS has been simplified to run without the chatbot module.
+    Live video processing, model inference, and traffic timing decisions still operate normally.
+    """)
+    st.markdown("**Tip:** Press the button above to start the system and view the real-time traffic decision overlay.")
 
-# --- INIT STATE FOR PROMPT ---
+# --- INIT STATE ---
 if "live_cars" not in st.session_state:
     st.session_state.live_cars = 0
 if "pred_speed" not in st.session_state:
     st.session_state.pred_speed = 0.0
 if "last_decision" not in st.session_state:
     st.session_state.last_decision = "Waiting for data..."
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "Hello operator! I am the ATFOS AI Assistant. Enter your Gemini API key, then ask me anything about the current intersection timings."}
-    ]
-
-# --- DISPLAY CHAT HISTORY ---
-with chat_container:
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-
-# --- LLM CHATBOT LOGIC ---
-if user_prompt:
-    st.session_state.messages.append({"role": "user", "content": user_prompt})
-    with chat_container:
-        with st.chat_message("user"):
-            st.markdown(user_prompt)
-        
-        with st.chat_message("assistant"):
-            if api_key:
-                with st.spinner("ATFOS is thinking..."):
-                    try:
-                        # Configure API
-                        genai.configure(api_key=api_key)
-                        model = genai.GenerativeModel('gemini-flash-latest')
-                        
-                        system_context = f"""
-                        You are ATFOS (AI-Driven Traffic Optimization System). 
-                        You are an advanced traffic automation controller.
-                        Currently, your cameras detect {st.session_state.live_cars} vehicles.
-                        Your historical Machine Learning models expect traffic to crawl at {st.session_state.pred_speed:.1f} km/h right now.
-                        Because of this, your overarching 'Logic Bridge' decided to output: {st.session_state.last_decision}.
-                        
-                        Give the user a short, incredibly smart-sounding, engineering-focused explanation for your decision based on the live count vs historical data constraint logic.
-                        Be extremely professional and brief (Under 3 concise sentences). Answer directly.
-                        """
-                        
-                        # Call API
-                        response = model.generate_content(system_context + "\nUser asked: " + user_prompt)
-                        bot_reply = response.text
-                    except Exception as e:
-                        bot_reply = f"⚠️ **API Error:** Check the key! ({str(e)})"
-            else:
-                bot_reply = f"🔑 **Activation Required:** Please enter a Gemini API Key in the sidebar. I cannot dynamically generate explanations without it! \n\n*Current Debug State: [Live Cars: {st.session_state.live_cars}] | [Hist Speed: {st.session_state.pred_speed:.1f} km/h].*"
-            
-            st.markdown(bot_reply)
-            st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-
 
 # --- REAL-TIME VIDEO PROCESSING PIPELINE ---
 if run_video:
